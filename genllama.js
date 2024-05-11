@@ -1,5 +1,6 @@
 import ollama from 'ollama';
 
+//TODO: Log prompts and their output to prompts.log
 export async function generateArticle(articleData) {
     const prompt = `Output raw makrdown only. Title: ${articleData.title}\n\n${articleData.data}\n\n${articleData.summary}`;
 
@@ -14,9 +15,11 @@ export async function generateArticle(articleData) {
     return article;
 }
 
+//TODO: Implement steps, for each step ask user feedback and prompt update
 const generateArticleSteps = {
     'title': 'genTitle',
+    'dataQuery': 'genDataQuery',
     'data': 'genData',
-    'article': 'generateArticle',
+    'article': 'genArticle',
     'graphs': 'genGraphs',
 }

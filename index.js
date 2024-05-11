@@ -2,6 +2,7 @@
 import readline from 'readline';
 import { promises as fs } from 'fs';
 import { generateArticle } from './genllama.js';
+import logger from './Logger.js';
 
 const readFile = fs.readFile;
 const createArticleFile = './wizard/createArticle.json';
@@ -41,7 +42,7 @@ async function createArticle() {
     // Review and update phase
     let updateNeeded = true;
     while (updateNeeded) {
-        console.log("\nCurrent responses:");
+        logger.log("INFO", "\nCurrent responses:");
         for (const key in articleData) {
             console.log(`${key}: ${articleData[key]}`);
         }
@@ -52,7 +53,7 @@ async function createArticle() {
             if (articleData.hasOwnProperty(keyToUpdate)) {
                 articleData[keyToUpdate] = await askQuestion(questions[keyToUpdate], articleData[keyToUpdate]);
             } else {
-                console.log("Invalid section. Please try again.");
+                logger.log("ERROR", "Invalid section. Please try again.");
             }
         } else {
             updateNeeded = false;
@@ -64,7 +65,7 @@ async function createArticle() {
     // Save to a file
     fs.writeFile("article.md", formattedArticle, (err) => {
         if (err) throw err;
-        console.log('The article has been saved!');
+        logger.log("INFO", 'The article has been saved!');
     });
 
     rl.close();
