@@ -1,7 +1,7 @@
 import ollama from 'ollama';
 
 export async function generateArticle(articleData) {
-    const prompt = `Title: ${articleData.title}\nAuthor: ${articleData.author}\nDate: ${articleData.date}\n\n${articleData.introduction}\n\n${articleData.content}\n\n${articleData.conclusion}`;
+    const prompt = `Output raw makrdown only. Title: ${articleData.title}\n\n${articleData.data}\n\n${articleData.summary}`;
 
     const response = await ollama.chat({
         model: 'llama3',
@@ -17,5 +17,6 @@ export async function generateArticle(articleData) {
 const generateArticleSteps = {
     'title': 'genTitle',
     'data': 'genData',
-    'article': 'generateArticle'
+    'article': 'generateArticle',
+    'graphs': 'genGraphs',
 }

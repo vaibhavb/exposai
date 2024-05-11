@@ -1,5 +1,5 @@
 {
     "data": "Where is your data? (default ./data)",
     "observable": "Where is observable? (default ./observable",
-    "summary": "Tell me a little bit about the artcile you want to explore with the data you have?"
+    "summary": "Tell me a little bit about the article you want to explore with the data you have?"
 }
