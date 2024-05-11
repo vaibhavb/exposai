@@ -1,23 +1,7 @@
 #!/usr/bin/env node
 import readline from 'readline';
 import { promises as fs } from 'fs';
-import ollama from 'ollama';
-
-/*
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-});
-
-rl.question(`How can I help you?\n`, async prompt => {
-    const message = { role: 'user', content: prompt }
-    const response = await ollama.chat({ model: 'llama3', messages: [message], stream: true })
-    for await (const part of response) {
-        process.stdout.write(part.message.content)
-    }
-    rl.close();
-});
-*/
+import { generateArticle } from './genllama.js';
 
 const readFile = fs.readFile;
 const createArticleFile = './wizard/createArticle.json';
@@ -75,10 +59,10 @@ async function createArticle() {
         }
     }
 
-    const formattedArticle = `Title: ${articleData.title}\nAuthor: ${articleData.author}\nDate: ${articleData.date}\n\n${articleData.introduction}\n\n${articleData.content}\n\n${articleData.conclusion}`;
+    const formattedArticle = await generateArticle(articleData);
 
     // Save to a file
-    fs.writeFile("article.txt", formattedArticle, (err) => {
+    fs.writeFile("article.md", formattedArticle, (err) => {
         if (err) throw err;
         console.log('The article has been saved!');
     });
