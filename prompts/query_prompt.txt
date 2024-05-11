@@ -1,0 +1,1 @@
+Based on the following schema, generate write SQL queries to gather data insights on women candidates in Indian elections

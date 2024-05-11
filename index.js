@@ -26,6 +26,7 @@ function askQuestion(question, defaultValue = '') {
     return new Promise((resolve) => {
         rl.question(`${question}${defaultValue ? ` (Default: ${defaultValue}) ` : ''}`, (answer) => {
             resolve(answer || defaultValue);
+            rl.close();
         });
     });
 }
