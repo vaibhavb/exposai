@@ -1,5 +1,7 @@
 import ollama from 'ollama';
 
+const sqlite3 = require('sqlite3').verbose();
+
 const titlePromptFile = './prompts/title_prompt.txt';
 const queryPromptFile = './prompts/query_prompt.txt';
 const articlePromptFile = './prompts/article_prompt.txt'
@@ -41,25 +43,39 @@ async function genTitle(rl, readFile) {
 async function genQuery(rl, readFile) {
     let queryPrompt = await readFile(queryPromptFile, 'utf8');
 
+    // Open your database
+    const db = new sqlite3.Database('tests/testdata/candidates.sqlite');
 
-    do {
-        const response = await ollama.chat({
-            model: 'llama3',
-            messages: [
-                { role: 'user', content: titlePrompt }
-            ]
-        });
-        let title = response.message.content;
-        console.log(title);
+    db.all("PRAGMA table_info('candidates')", [], async (err, rows) => {
+        if (err) {
+            throw err;
+        }
 
-        const res = await rl.question('Are you satisfied with the title? (yes/no)\n');
-        if (res === 'yes') {
-            return title;
-        }
-        else {
-            titlePrompt = await rl.question('Enter new prompt:\n');
-        }
-    } while (true);
+        const columnNames = rows.map(row => row.name);
+        console.log(`Schema: ${columnNames}\n`);
+        do {
+            const response = await ollama.chat({
+                model: 'llama3',
+                messages: [
+                    { role: 'user', content: queryPrompt }
+                ]
+            });
+            let queries = response.message.content;
+            console.log(queries);
+
+            const res = await rl.question('Are you satisfied with the queries? (yes/no)\n');
+            if (res === 'yes') {
+                return queries;
+            }
+            else {
+                queryPrompt = await rl.question('Enter new prompt:\n');
+            }
+        } while (true);
+    });
+
+    db.close(); // Close the connection when done
+
+
 }
 
 

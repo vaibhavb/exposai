@@ -13,7 +13,8 @@
     "exposai": "./index.js"
   },
   "dependencies": {
-    "ollama": "^0.5.1"
+    "ollama": "^0.5.1",
+    "sqlite3": "^5.1.7"
   },
   "type": "module"
 }
