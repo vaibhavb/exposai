@@ -11,5 +11,9 @@
   "license": "Apache 2.0",
   "bin": {
     "exposai": "./index.js"
-  }
+  },
+  "dependencies": {
+    "ollama": "^0.5.1"
+  },
+  "type": "module"
 }
