@@ -1,0 +1,10 @@
+{
+    "title": "What is the title of your article? ",
+    "data": "Where is your data?",
+    "observable": "Where is observable?",
+    "author": "Who is the author of the article? ",
+    "date": "What is the date today? ",
+    "introduction": "Write a short introduction: ",
+    "content": "Write the main content of your article: ",
+    "conclusion": "Write a conclusion: "
+}
