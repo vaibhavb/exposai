@@ -1,7 +1,7 @@
 import ollama from 'ollama';
 import sqlite3 from'sqlite3';
 import { promises as fs } from 'fs';
-import readline from 'readline';
+import { askQuestion, substituteVariables, logger } from './utils.js';
 
 
 const titlePromptFile = './prompts/title_prompt.txt';
@@ -9,44 +9,41 @@ const queryPromptFile = './prompts/query_prompt.txt';
 const articlePromptFile = './prompts/article_prompt.txt'
 
 //TODO: Log prompts and their output to prompts.log
-export async function generateArticle() {
-    // const prompt = `Output raw markdown only. Title: ${articleData.title}\n\n${articleData.data}\n\n${articleData.summary}`;
+export async function generateArticle(exposaiState) {
     let article = {};
-    article.title = genTitle();
+    article.title = genTitle(exposaiState);
     //article.query = genQuery(rl, readFile);
     //article.body = genArticleBody(rl, readFile);
 
     return article;
 }
 
-async function genTitle() {
+async function genTitle(exposaiState) {
     let titlePrompt = await fs.readFile(titlePromptFile, 'utf8');
+    titlePrompt = substituteVariables(titlePrompt, exposaiState);
+    logger.info(titlePrompt);
 
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
+    const response = await ollama.chat({
+        model: 'llama3',
+        messages: [
+            { role: 'user', content: titlePrompt }
+        ]
     });
-
-    //do {
-        const response = await ollama.chat({
-            model: 'llama3',
-            messages: [
-                { role: 'user', content: titlePrompt }
-            ]
-        });
-        let title = response.message.content;
-        console.log(title);
-        return title;
-/*
-        const res = await rl.question('Are you satisfied with the title? (yes/no)\n');
-        if (res === 'yes') {
-            return title;
-        }
-        else {
-            titlePrompt = await rl.question('Enter new prompt:\n');
-        }
-        */
-    //} while (true);
+    let title = response.message.content;
+    logger.info(title);
+    let titles = JSON.parse(title);
+    for (const [index, value] of titles.entries()) {
+        console.log(`${index}: ${value}`);
+    }
+    const res = await askQuestion('Are you satisfied with the title? (yes/no)\n', 'yes');
+    if (res === 'yes') {
+        const res = await askQuestion('Are you satisfied with the title? (`0..9`)\n', '0');
+        return titles[res];
+    }
+    else {
+        titlePrompt = await rl.question('Enter new prompt:\n');
+        return titlePrompt;
+    }
 }
 
 async function genQuery(rl, readFile) {

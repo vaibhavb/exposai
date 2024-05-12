@@ -1,1 +1,1 @@
-Generate a title for an article on women candidates in Indian elections
+Generate 10 titles for {$summary}. Return them as a JSON array of strings without markdown code blocks. Start with "[".

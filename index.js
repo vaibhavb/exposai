@@ -1,16 +1,11 @@
 #!/usr/bin/env node
-import readline from 'readline';
 import { promises as fs } from 'fs';
 import { generateArticle } from './genllama.js';
-import logger from './Logger.js';
+import { askQuestion, logger } from './utils.js';
 
 const readFile = fs.readFile;
 const createArticleFile = './wizard/createArticle.json';
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
 
 async function loadQuestions() {
     try {
@@ -22,13 +17,6 @@ async function loadQuestions() {
     }
 }
 
-function askQuestion(question, defaultValue = '') {
-    return new Promise((resolve) => {
-        rl.question(`${question}${defaultValue ? ` (Default: ${defaultValue}) ` : ''}`, (answer) => {
-            resolve(answer || defaultValue);
-        });
-    });
-}
 
 async function createArticle() {
     const questions = await loadQuestions();
@@ -60,7 +48,7 @@ async function createArticle() {
 
     // Initial questioning phase
     for (const key in questions) {
-        exposaiState[key] = await askQuestion(questions[key]);
+        exposaiState[key] = await askQuestion(questions[key], exposaiState[key]);
     }
 
     // Review and update phase
@@ -68,9 +56,9 @@ async function createArticle() {
     while (updateNeeded) {
         logger.log("INFO", "\nCurrent responses:");
         for (const key in exposaiState) {
-            console.log(`${key}: ${exposaiState[key]}`);
+            logger.log(`${key}: ${exposaiState[key]}`);
         }
-        const updateResponse = await askQuestion("Do you want to update any answers? (yes/no) ");
+        const updateResponse = await askQuestion("Do you want to update any answers? (yes/no)", "no");
 
         if (updateResponse.toLowerCase() === 'yes') {
             const keyToUpdate = await askQuestion("Which section do you want to update? (title, author, date, introduction, content, conclusion) ");
@@ -86,7 +74,7 @@ async function createArticle() {
 
     saveState(exposaiState);
     logger.log('INFO', 'All questions answered! Generating the article...');
-    const formattedArticle = await generateArticle();
+    const formattedArticle = await generateArticle(exposaiState);
 
     /*
     // Save to a file
@@ -95,7 +83,6 @@ async function createArticle() {
         logger.log("INFO", 'The article has been saved!');
     });
     */
-    rl.close();
 }
 
 createArticle();
