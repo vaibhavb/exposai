@@ -5,3 +5,14 @@ ExposAI empowers journalists to transform raw data into compelling narratives, s
 
 1. npm install
 2. npm link
+
+
+# Output Steps
+1. Install Observable
+```
+npm install -g @observablehq/cli
+```
+
+# Future Direction
+1. Enrich Data
+

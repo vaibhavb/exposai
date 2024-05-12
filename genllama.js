@@ -1,26 +1,33 @@
 import ollama from 'ollama';
+import sqlite3 from'sqlite3';
+import { promises as fs } from 'fs';
+import readline from 'readline';
 
-const sqlite3 = require('sqlite3').verbose();
 
 const titlePromptFile = './prompts/title_prompt.txt';
 const queryPromptFile = './prompts/query_prompt.txt';
 const articlePromptFile = './prompts/article_prompt.txt'
 
 //TODO: Log prompts and their output to prompts.log
-export async function generateArticle(rl, readFile) {
+export async function generateArticle() {
     // const prompt = `Output raw markdown only. Title: ${articleData.title}\n\n${articleData.data}\n\n${articleData.summary}`;
     let article = {};
-    article.title = genTitle(rl, readFile);
-    article.query = genQuery(rl, readFile);
-    article.body = genArticleBody(rl, readFile);
+    article.title = genTitle();
+    //article.query = genQuery(rl, readFile);
+    //article.body = genArticleBody(rl, readFile);
 
     return article;
 }
 
-async function genTitle(rl, readFile) {
-    let titlePrompt = await readFile(titlePromptFile, 'utf8');
+async function genTitle() {
+    let titlePrompt = await fs.readFile(titlePromptFile, 'utf8');
 
-    do {
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
+    //do {
         const response = await ollama.chat({
             model: 'llama3',
             messages: [
@@ -29,7 +36,8 @@ async function genTitle(rl, readFile) {
         });
         let title = response.message.content;
         console.log(title);
-
+        return title;
+/*
         const res = await rl.question('Are you satisfied with the title? (yes/no)\n');
         if (res === 'yes') {
             return title;
@@ -37,7 +45,8 @@ async function genTitle(rl, readFile) {
         else {
             titlePrompt = await rl.question('Enter new prompt:\n');
         }
-    } while (true);
+        */
+    //} while (true);
 }
 
 async function genQuery(rl, readFile) {
