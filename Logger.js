@@ -8,7 +8,7 @@ const __dirname = dirname(__filename);
 
 class Logger {
     constructor() {
-        this.logDirectory = path.join(__dirname, 'logs');
+        this.logDirectory = path.join(__dirname, './logs');
         // Ensure log directory exists
         if (!fs.existsSync(this.logDirectory)) {
             fs.mkdirSync(this.logDirectory);

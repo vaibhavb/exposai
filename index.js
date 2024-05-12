@@ -20,7 +20,7 @@ async function loadQuestions() {
 
 async function createArticle() {
     const questions = await loadQuestions();
-    const exposaiFolderPath = './exposai';
+    const exposaiFolderPath = './.exposai';
     const exposaiStatePath = `${exposaiFolderPath}/exposaiState.json`;
     
     async function saveState(state) {

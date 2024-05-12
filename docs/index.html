@@ -5,20 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ExposAI Landing Page</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        body, html {
             margin: 0;
             padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             background-color: #f4f4f4;
         }
         .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
-            padding: 20px;
+            width: 80%;
+            max-width: 960px;
             background: #fff;
+            padding: 20px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
         .logo {
@@ -33,14 +38,50 @@
             border-radius: 5px;
             font-size: 16px;
         }
+        header {
+            width: 100%;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        header input[type="search"] {
+            width: 80%;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+        }
+        main {
+            padding: 20px;
+            width: 100%;
+        }
+        .card {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            header input[type="search"] {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <header>
+            <input type="search" placeholder="Search data...">
+        </header>
         <img src="exposai-logo.png" alt="ExposAI Logo" class="logo">
-        <p>ExposAI harnesses artificial intelligence to revolutionize journalism, enabling the creation of interactive, data-driven stories that uncover and present truths with unprecedented depth and clarity. This innovative tool empowers journalists to explore complex datasets and craft compelling narratives that engage and inform.</p>
-        <a href="#" class="get-started-btn">Get Started</a>
+        <main>
+            <div class="card">
+                <p>ExposAI harnesses artificial intelligence to revolutionize journalism, enabling the creation of interactive, data-driven stories that uncover and present truths with unprecedented depth and clarity. This innovative tool empowers journalists to explore complex datasets and craft compelling narratives that engage and inform.</p>
+            </div>
+            <a href="#" class="get-started-btn">Get Started</a>
+        </main>
     </div>
 </body>
 </html>
-
