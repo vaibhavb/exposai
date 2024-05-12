@@ -38,17 +38,6 @@
             border-radius: 5px;
             font-size: 16px;
         }
-        header {
-            width: 100%;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        header input[type="search"] {
-            width: 80%;
-            padding: 10px;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-        }
         main {
             padding: 20px;
             width: 100%;
@@ -60,27 +49,36 @@
             padding: 20px;
             border-radius: 5px;
         }
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
         @media (max-width: 768px) {
             .container {
                 width: 95%;
-            }
-            header input[type="search"] {
-                width: 100%;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <input type="search" placeholder="Search data...">
-        </header>
         <img src="exposai-logo.png" alt="ExposAI Logo" class="logo">
         <main>
             <div class="card">
                 <p>ExposAI harnesses artificial intelligence to revolutionize journalism, enabling the creation of interactive, data-driven stories that uncover and present truths with unprecedented depth and clarity. This innovative tool empowers journalists to explore complex datasets and craft compelling narratives that engage and inform.</p>
             </div>
-            <a href="#" class="get-started-btn">Get Started</a>
+            <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/-s1CXz-plD4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <a href="https://github.com/vaibhavb/exposai/" class="get-started-btn">Get Started On Github</a>
         </main>
     </div>
 </body>

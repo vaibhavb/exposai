@@ -1,1 +1,4 @@
-Based on the following schema, generate write SQL queries to gather data insights on women candidates in Indian elections
+Based on the following schema {$dataSchema}, generate SQL queries to gather data insights on {$summary}. Output in ```format. Example output is:
+```js echo
+const criminals = await db.sql`SELECT * FROM candidates WHERE "Criminal Cases" > 0;`
+```

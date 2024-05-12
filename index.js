@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { promises as fs } from 'fs';
-import { generateArticle } from './genllama.js';
-import { askQuestion, logger } from './utils.js';
+import { ArticleGenerator } from './genllama.js';
+import { askQuestion, logger, runObservable } from './utils.js';
 
 const readFile = fs.readFile;
 const createArticleFile = './wizard/createArticle.json';
@@ -20,10 +20,10 @@ async function loadQuestions() {
 
 async function createArticle() {
     const questions = await loadQuestions();
-    const exposaiFolderPath = './.exposai';
-    const exposaiStatePath = `${exposaiFolderPath}/exposaiState.json`;
     
     async function saveState(state) {
+        const exposaiFolderPath = './.exposai';
+        const exposaiStatePath = `${exposaiFolderPath}/exposaiState.json`;
         try {
             // Check if the folder exists; create it if it doesn't
             try {
@@ -40,8 +40,11 @@ async function createArticle() {
     
     let exposaiState;
     try {
+        const exposaiFolderPath = './.exposai';
+        const exposaiStatePath = `${exposaiFolderPath}/exposaiState.json`;
         const data = await readFile(exposaiStatePath, "utf-8");
         exposaiState = JSON.parse(data);
+        logger.info(exposaiState);
     } catch {
         exposaiState = {}; // Set to empty object if the file or directory doesn't exist
     }
@@ -50,39 +53,12 @@ async function createArticle() {
     for (const key in questions) {
         exposaiState[key] = await askQuestion(questions[key], exposaiState[key]);
     }
-
-    // Review and update phase
-    let updateNeeded = true;
-    while (updateNeeded) {
-        logger.log("INFO", "\nCurrent responses:");
-        for (const key in exposaiState) {
-            logger.log(`${key}: ${exposaiState[key]}`);
-        }
-        const updateResponse = await askQuestion("Do you want to update any answers? (yes/no)", "no");
-
-        if (updateResponse.toLowerCase() === 'yes') {
-            const keyToUpdate = await askQuestion("Which section do you want to update? (title, author, date, introduction, content, conclusion) ");
-            if (exposaiState.hasOwnProperty(keyToUpdate)) {
-                exposaiState[keyToUpdate] = await askQuestion(questions[keyToUpdate], exposaiState[keyToUpdate]);
-            } else {
-                logger.log("ERROR", "Invalid section. Please try again.");
-            }
-        } else {
-            updateNeeded = false;
-        }
-    }
-
     saveState(exposaiState);
-    logger.log('INFO', 'All questions answered! Generating the article...');
-    const formattedArticle = await generateArticle(exposaiState);
-
-    /*
-    // Save to a file
-    fs.writeFile("article.md", formattedArticle, (err) => {
-        if (err) throw err;
-        logger.log("INFO", 'The article has been saved!');
-    });
-    */
+    logger.log('INFO', 'All questions answered! Regenerate or start new article...');
+    const articleGenerator = new ArticleGenerator(exposaiState);
+    await articleGenerator.restartPreviousRun()
+    await articleGenerator.generateAndSaveArticle();
+    await runObservable();
 }
 
 createArticle();

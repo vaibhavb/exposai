@@ -38,6 +38,10 @@ class Logger {
         this.log('WARN', message);
     }
 
+    prompt(fn, output){
+        this.log('PROMPT', `Function: ${fn}, Output: ${JSON.stringify(output)}\n`);
+    }
+
     log(level, message) {
         console.log(`${new Date().toISOString()} [${level}] ${message}`);
     }
