@@ -17,7 +17,6 @@ async function loadQuestions() {
     }
 }
 
-
 async function createArticle() {
     const questions = await loadQuestions();
     
@@ -55,7 +54,7 @@ async function createArticle() {
     }
     saveState(exposaiState);
     logger.log('INFO', 'All questions answered! Regenerate or start new article...');
-    const articleGenerator = new ArticleGenerator(exposaiState);
+    const articleGenerator = new ArticleGenerator(exposaiState, 'openai');
     await articleGenerator.restartPreviousRun()
     await articleGenerator.generateAndSaveArticle();
     await runObservable();

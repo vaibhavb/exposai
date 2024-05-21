@@ -1,13 +1,37 @@
 import ollama from 'ollama';
+import OpenAI from 'openai';
 import sqlite3 from'sqlite3';
 import { promises as fs } from 'fs';
 import { askQuestion, substituteVariables, logger } from './utils.js';
 
 export class ArticleGenerator {
-    constructor(exposaiState) {
+    constructor(exposaiState, model='ollama') {
         this.exposaiState = exposaiState;
+        this.modelName = model;
     }
 
+    async getResponse(prompt) {
+        if (this.modelName === 'ollama') {
+            const response = await ollama.chat({
+                model: 'llama3',
+                messages: [
+                    { role: 'user', content: prompt }
+                ]
+            });
+            return response.message.content;  
+        }
+        else if (this.modelName === 'openai'){
+            const openai = new OpenAI();
+            const response = await openai.chat.completions.create({
+                model: 'gpt-4o',
+                messages: [
+                    { role: 'system', content: "" },
+                    { role: 'user', content: prompt }
+                ]
+            });
+            return response.choices[0];
+        }
+    }
     async saveState(){
         const exposaiFolderPath = './.exposai';
         const statePath = `${exposaiFolderPath}/articleState.json`;
@@ -97,12 +121,7 @@ export class ArticleGenerator {
         titlePrompt = substituteVariables(titlePrompt, this.exposaiState);
         logger.info(titlePrompt);
 
-        const response = await ollama.chat({
-            model: 'llama3',
-            messages: [
-                { role: 'user', content: titlePrompt }
-            ]
-        });
+        const response = await this.getResponse(titlePrompt) 
         let title = response.message.content;
         logger.info(title);
         let titles = JSON.parse(title);
@@ -115,7 +134,7 @@ export class ArticleGenerator {
             return titles[res];
         }
         else {
-            titlePrompt = await rl.question('Enter new prompt:\n');
+            titlePrompt = await askQuestion('Enter new prompt:\n');
             return titlePrompt;
         }
     }
@@ -141,13 +160,7 @@ export class ArticleGenerator {
         let queryPrompt = await fs.readFile(queryPromptFile, 'utf8');
         queryPrompt = substituteVariables(queryPrompt, this.exposaiState);
 
-        const response = await ollama.chat({
-            model: 'llama3',
-            messages: [
-                { role: 'user', content: queryPrompt }
-            ]
-        });
-
+        const response = await this.getResponse(queryPrompt) 
         let queries = response.message.content;
         logger.info(queries);
 
@@ -167,12 +180,8 @@ export class ArticleGenerator {
         prompt = substituteVariables(prompt, this.exposaiState);
         logger.info(prompt);
 
-        const response = await ollama.chat({
-            model: 'llama3',
-            messages: [
-                { role: 'user', content: prompt }
-            ]
-        });
+        const response = await this.getResponse(prompt) 
+ 
         let data = response.message.content;
         logger.prompt("Article", data);
 
