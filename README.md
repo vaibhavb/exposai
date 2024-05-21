@@ -1,5 +1,4 @@
 # exposai
-(Current Version: 0.0.1)
 ExposAI empowers journalists to transform raw data into compelling narratives, streamlining the process of extracting and crafting stories from diverse data points for richer, more informative journalism. This tool integrates AI to enhance interactivity and depth in data-driven storytelling.
 
 # Dev Steps
