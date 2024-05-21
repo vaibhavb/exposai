@@ -1,13 +1,13 @@
 {
   "name": "exposai",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "ExposAI empowers journalists to transform raw data into compelling narratives, streamlining the process of extracting and crafting stories from diverse data points for richer, more informative journalism. This tool integrates AI to enhance interactivity and depth in data-driven storytelling.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Vaibhav Bhandari <vaibhavb@gmail.com>",
   "license": "Apache 2.0",
   "bin": {
     "exposai": "./index.js"
