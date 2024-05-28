@@ -4,7 +4,7 @@
   "description": "ExposAI empowers journalists to transform raw data into compelling narratives, streamlining the process of extracting and crafting stories from diverse data points for richer, more informative journalism. This tool integrates AI to enhance interactivity and depth in data-driven storytelling.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests/testOpenEditor.js"
   },
   "keywords": [],
   "author": "Vaibhav Bhandari <vaibhavb@gmail.com>",
@@ -13,6 +13,7 @@
     "exposai": "./index.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.21.1",
     "ollama": "^0.5.1",
     "openai": "^4.47.1",
     "sqlite3": "^5.1.7"

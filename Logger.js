@@ -14,6 +14,7 @@ class Logger {
             fs.mkdirSync(this.logDirectory);
         }
 
+        this.promptStream = fs.createWriteStream(path.join(this.logDirectory, 'prompts.log'), {flags: 'a'}); 
         this.errorStream = fs.createWriteStream(path.join(this.logDirectory, 'system.log'), { flags: 'a' });
         this.infoStream = fs.createWriteStream(path.join(this.logDirectory, 'system.log'), { flags: 'a' });
     }
@@ -38,8 +39,15 @@ class Logger {
         this.log('WARN', message);
     }
 
-    prompt(fn, output){
-        this.log('PROMPT', `Function: ${fn}, Output: ${JSON.stringify(output)}\n`);
+    prompt(fn, prompt, output){
+        const promptEntry = {
+            function: fn,
+            request: prompt,
+            response: output
+        }
+        const promptString = JSON.stringify(promptEntry, null, 2) + '\n';
+        this.promptStream.write(`${new Date().toISOString()}\n ${promptString}`);
+        this.log('PROMPT', `${promptString}`);
     }
 
     log(level, message) {

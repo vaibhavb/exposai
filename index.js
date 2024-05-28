@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { promises as fs } from 'fs';
-import { ArticleGenerator } from './genllama.js';
+import { ArticleGenerator } from './generator.js';
 import { askQuestion, logger, runObservable } from './utils.js';
 
 const readFile = fs.readFile;
@@ -54,7 +54,8 @@ async function createArticle() {
     }
     saveState(exposaiState);
     logger.log('INFO', 'All questions answered! Regenerate or start new article...');
-    const articleGenerator = new ArticleGenerator(exposaiState, 'openai');
+    //const articleGenerator = new ArticleGenerator(exposaiState, 'openai', {model: 'gpt-3.5-turbo'});
+    const articleGenerator = new ArticleGenerator(exposaiState, 'anthropic', {model: 'claude-3-haiku-20240307'});
     await articleGenerator.restartPreviousRun()
     await articleGenerator.generateAndSaveArticle();
     await runObservable();

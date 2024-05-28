@@ -1,1 +1,1 @@
-Generate 10 titles for {$summary}. Return them as a JSON array of strings without markdown code blocks. Start with "[".
+Generate 10 titles for {$summary}. Return them as a ONE JSON array of strings without markdown code blocks. Start with "[".

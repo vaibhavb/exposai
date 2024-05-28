@@ -1,7 +1,39 @@
 
 import logger_instance from './Logger.js';
 import readline from 'readline';
-import { exec } from 'child_process';
+import { exec, execSync } from 'child_process';
+import {promises as fs} from 'fs';
+import path from 'path';
+import os from 'os';
+import {promisify} from 'util';
+
+export async function openEditor(data) {
+        // Define the temporary file path
+        const tmpFilePath = path.join(os.tmpdir(), 'temp_editor_file.txt');
+
+        // Write the initial content to the temporary file
+        await fs.writeFile(tmpFilePath, data);
+
+        // Determine the editor to use (default to nano or any editor you prefer)
+        const editor = process.env.EDITOR || 'nano';
+
+        const execPromise = promisify(exec);
+        // Open the editor and wait for the user to finish editing
+        try {
+            execSync(`${editor} ${tmpFilePath}`, { stdio: 'inherit' });
+        } catch (error) {
+            console.error('Error opening the editor:', error);
+            return null;
+        }
+
+        // Read the content back from the temporary file
+        const editedContent = await fs.readFile(tmpFilePath, 'utf-8');
+
+        // Clean up the temporary file
+        await fs.unlink(tmpFilePath);
+        return editedContent;
+}
+
 
 export async function askQuestion (question, defaultValue = '') {
     const rl = readline.createInterface({
@@ -18,6 +50,18 @@ export async function askQuestion (question, defaultValue = '') {
         rl.close(); // Double ensure cleanup in case of any issues
     });
 }
+
+export async function confirm(data){
+    const res = await askQuestion('Are you satisfied with this? (yes/no)\n', 'yes');
+    if (res === 'yes') {
+        return data;
+    }
+    else {
+        const newdata = await openEditor(data);
+        return newdata;
+    }
+}
+
 
 export function substituteVariables(str, vars) {
     return str.replace(/\{\$(\w+)\}/g, (match, key) => {
