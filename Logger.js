@@ -40,12 +40,14 @@ class Logger {
     }
 
     prompt(fn, prompt, output){
-        const promptEntry = {
-            function: fn,
-            request: prompt,
-            response: output
-        }
-        const promptString = JSON.stringify(promptEntry, null, 2) + '\n';
+        const promptEntry = `
+function: ${fn}
+
+request: ${prompt}
+
+response: ${output}
+        `
+        const promptString = promptEntry + '\n';
         this.promptStream.write(`${new Date().toISOString()}\n ${promptString}`);
         this.log('PROMPT', `${promptString}`);
     }
